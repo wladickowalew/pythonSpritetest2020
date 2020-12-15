@@ -17,25 +17,32 @@ def load_image(name, colorkey=None):
         image = image.convert_alpha()
     return image
 
+
+
 def main():
     pygame.init()
     pygame.display.set_caption('Спрайты')
     size = width, height = 500, 500
     screen = pygame.display.set_mode(size)
 
+    class Bomb(pygame.sprite.Sprite):
+        image = load_image("bomb.png")
+        def __init__(self, *group):
+            super().__init__(*group)
+            self.image = Bomb.image
+            self.rect = self.image.get_rect()
+            self.rect.x = random.randrange(width - self.rect.width)
+            self.rect.y = random.randrange(height - self.rect.height)
+
+        def update(self):
+            self.rect = self.rect.move(random.randrange(3) - 1, 
+                                       random.randrange(3) - 1)
+
     # создадим группу, содержащую все спрайты
     all_sprites = pygame.sprite.Group()
-    bomb_image = load_image("bomb.png")
 
     for i in range(50):
-        # можно сразу создавать спрайты с указанием группы
-        bomb = pygame.sprite.Sprite(all_sprites)
-        bomb.image = bomb_image
-        bomb.rect = bomb.image.get_rect()
-
-        # задаём случайное местоположение бомбочке
-        bomb.rect.x = random.randrange(width - 40)
-        bomb.rect.y = random.randrange(height - 40)
+        Bomb(all_sprites)
 
     running = True
     clock = pygame.time.Clock()
@@ -44,10 +51,12 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        all_sprites.draw(screen)            
+        all_sprites.draw(screen)
+        all_sprites.update()
         pygame.display.flip()
-        clock.tick()
+        clock.tick(30)
     pygame.quit()
 
 if __name__ == '__main__':
     main()
+
