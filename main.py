@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, random
 import pygame
 
 def load_image(name, colorkey=None):
@@ -25,17 +25,17 @@ def main():
 
     # создадим группу, содержащую все спрайты
     all_sprites = pygame.sprite.Group()
+    bomb_image = load_image("bomb.png")
 
-    # создадим спрайт
-    sprite = pygame.sprite.Sprite()
-    # определим его вид
-    sprite.image = load_image("bomb.png")
-    # и размеры
-    sprite.rect = sprite.image.get_rect()
-    # добавим спрайт в группу
-    sprite.rect.x = 5
-    sprite.rect.y = 20
-    all_sprites.add(sprite)
+    for i in range(50):
+        # можно сразу создавать спрайты с указанием группы
+        bomb = pygame.sprite.Sprite(all_sprites)
+        bomb.image = bomb_image
+        bomb.rect = bomb.image.get_rect()
+
+        # задаём случайное местоположение бомбочке
+        bomb.rect.x = random.randrange(width - 40)
+        bomb.rect.y = random.randrange(height - 40)
 
     running = True
     clock = pygame.time.Clock()
